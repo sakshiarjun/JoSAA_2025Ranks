@@ -8,8 +8,10 @@ function App() {
   const [round, setRound] = useState("6");
   const [branch, setBranch] = useState("");
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
+    setLoading(true);
     alert("Fetching data... This may take a few seconds.");
     try {
       const res = await axios.get(
@@ -30,6 +32,7 @@ function App() {
       console.error(err);
       alert("Error fetching data");
     }
+    setLoading(false);
   };
 
   // 🎯 Top recommendations logic
@@ -107,9 +110,13 @@ function Card({ data }) {
   return (
     <div className="card">
       <h3>{data["Institute"]}</h3>
-      <p>{data["Program"]}</p>
-      <p><b>Quota:</b> {data["Quota"]}</p>
-      <p><b>Closing Rank:</b> {data["Closing Rank"]}</p>
+
+      <p><b>{data["Program"]}</b></p>
+
+      <p>Quota: {data["Quota"]}</p>
+
+      <p>Closing Rank: <b>{data["Closing Rank"]}</b></p>
+
       <span className={`badge ${data.chance.toLowerCase()}`}>
         {data.chance}
       </span>

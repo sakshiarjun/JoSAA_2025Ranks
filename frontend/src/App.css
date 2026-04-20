@@ -1,55 +1,133 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Background */
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #f1f5f9;
+}
+
+/* Container */
 .container {
   padding: 20px;
-  font-family: Arial;
+  max-width: 1200px;
+  margin: auto;
 }
 
+/* Header */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Filters */
 .filters {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  margin-bottom: 25px;
 }
 
-.filters input, .filters select {
-  padding: 8px;
-}
-
-button {
-  padding: 8px 12px;
-  cursor: pointer;
-  background: #007bff;
-  color: white;
+.filters input,
+.filters select {
+  padding: 10px;
+  border-radius: 8px;
   border: none;
-  border-radius: 5px;
+  outline: none;
+  background: #1e293b;
+  color: white;
 }
 
+/* Button */
+button {
+  padding: 10px 15px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #2563eb;
+}
+
+/* Sections */
+h2 {
+  margin: 20px 0 10px;
+}
+
+/* Grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 15px;
 }
 
+/* Card */
 .card {
-  border: 1px solid #ddd;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
   padding: 15px;
-  border-radius: 10px;
-  background: #fafafa;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: 0.2s;
+  backdrop-filter: blur(8px);
 }
 
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.card h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 0.9rem;
+  margin: 4px 0;
+}
+
+/* Badge */
 .badge {
+  display: inline-block;
+  margin-top: 10px;
   padding: 5px 10px;
-  border-radius: 5px;
-  color: white;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: bold;
 }
 
 .safe {
-  background: green;
+  background: #16a34a;
 }
 
 .moderate {
-  background: orange;
+  background: #f59e0b;
 }
 
 .dream {
-  background: red;
+  background: #dc2626;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .filters {
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
 }
