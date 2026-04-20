@@ -13,7 +13,7 @@ function App() {
     alert("Fetching data... This may take a few seconds.");
     try {
       const res = await axios.get(
-        `http://josaa-2025ranks.onrender.com/predict?rank=${rank}&category=${category}&round=${round}`
+        `https://josaa-2025ranks.onrender.com/predict?rank=${rank}&category=${category}&round=${round}`
       );
 
       let data = res.data;
