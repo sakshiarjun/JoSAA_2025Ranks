@@ -3,6 +3,7 @@ const cors = require("cors");
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 console.log("Loading data...");
 const data = require("./josaa.json");
@@ -55,10 +56,6 @@ app.get("/predict", (req, res) => {
   result.sort((a, b) => a["Closing Rank"] - b["Closing Rank"]);
 
   res.json(result.slice(0, 100)); // limit for performance
-});
-
-app.get("/predict", (req, res) => {
-  res.send("Predict route working");
 });
 
 const PORT = process.env.PORT || 5050;
