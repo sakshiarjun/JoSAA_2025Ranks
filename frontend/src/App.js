@@ -173,6 +173,7 @@ function App() {
           <button onClick={fetchData}>Search</button>
         </div>
 
+        {loading && <p>Loading...</p>}
         {showResults && (
           <>
             {/* Recommendations */}
