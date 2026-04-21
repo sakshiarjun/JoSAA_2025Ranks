@@ -58,6 +58,52 @@ app.get("/predict", (req, res) => {
   res.json(result.slice(0, 100)); // limit for performance
 });
 
+app.get("/institute_cutoffs", (req, res) => {
+  const institute = req.query.institute;
+  const program = req.query.program;
+  const category = req.query.category;
+  const gender = req.query.gender || null;
+
+  if (!institute || !program) {
+    return res.status(400).json({ error: "Institute and Program required" });
+  }
+
+  let result = data.filter(d =>
+    d["Institute"].toLowerCase().includes(institute.toLowerCase()) &&
+    d["Program"].toLowerCase().includes(program.toLowerCase())
+  );
+
+  // Category filter
+  if (category) {
+    result = result.filter(d => d["Seat Type"] === category);
+  }
+
+  // Gender filter (optional)
+  if (gender) {
+    result = result.filter(d =>
+      d["Gender"].toLowerCase().includes(gender.toLowerCase())
+    );
+  }
+
+  // 🧠 Group by round (important for your feature)
+  result = result.map(d => ({
+    "Institute": d["Institute"],
+    "Program": d["Program"],
+    "Round": d["Round"],
+    "Quota": d["Quota"],
+    "Seat Type": d["Seat Type"],
+    "Gender": d["Gender"],
+    "Opening Rank": d["Opening Rank"],
+    "Closing Rank": d["Closing Rank"]
+  }));
+  console.log("Filtered cutoffs:", result.length, "records", result.slice(0, 3)); // debug log
+
+  // Sort by round (1 → 6)
+  result.sort((a, b) => a["Round"] - b["Round"]);
+
+  res.json(result);
+});
+
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
