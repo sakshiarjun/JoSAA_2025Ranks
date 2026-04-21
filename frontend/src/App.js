@@ -1,5 +1,5 @@
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import axios, { all } from "axios";
 import "./App.css";
 
 function App() {
@@ -19,6 +19,10 @@ function App() {
   const [genderFilter, setGenderFilter] = useState(""); // State for Gender filter
   const [seatTypeFilter, setSeatTypeFilter] = useState(""); // State for Seat Type filter
   const [hideHomeState, setHideHomeState] = useState(false); // State for Hide Home State Data filter
+  const [allInstitutes, setAllInstitutes] = useState([]);
+  const [allPrograms, setAllPrograms] = useState([]);
+  const [allProgramsGlobal, setAllProgramsGlobal] = useState([]);
+  const [branchSuggestions, setBranchSuggestions] = useState([]);
 
   const fetchInstituteData = async () => {
     if (!instName || !progName) {
@@ -30,7 +34,8 @@ function App() {
 
     try {
       const res = await axios.get(
-        `https://josaa-2025ranks.onrender.com/institute_cutoffs?institute=${instName}&program=${progName}`
+        // `http://localhost:5050/institute_cutoffs?institute=${instName}&program=${progName}`
+         `https://josaa-2025ranks.onrender.com/institute_cutoffs?institute=${instName}&program=${progName}`
       );
 
       let data = res.data;
@@ -57,15 +62,59 @@ function App() {
     setLoading(false);
   };
 
+  useEffect(() => {
+    const fetchInstitutes = async () => {
+      try {
+        const res = await axios.get(
+          // "http://localhost:5050/institutes"
+          "https://josaa-2025ranks.onrender.com/institutes"
+        );
+        setAllInstitutes(res.data);
+      } catch (err) {
+        console.error("Error fetching institutes:", err);
+      }
+    };
+
+    fetchInstitutes();
+  }, []);
+
+  useEffect(() => {
+    const fetchAllPrograms = async () => {
+      try {
+        const res = await axios.get(
+          // "http://localhost:5050/all_programs"
+          "https://josaa-2025ranks.onrender.com/all_programs"
+        );
+        setAllProgramsGlobal(res.data);
+      } catch (err) {
+        console.error("Error fetching all programs:", err);
+      }
+    };
+
+    fetchAllPrograms();
+  }, []);
+
+  const fetchPrograms = async (institute) => {
+    try {
+      const res = await axios.get(
+        // `http://localhost:5050/programs?institute=${institute}`
+        `https://josaa-2025ranks.onrender.com/programs?institute=${institute}`
+      );
+      setAllPrograms(res.data);
+    } catch (err) {
+      console.error("Error fetching programs:", err);
+    }
+  };
+
   const fetchData = async () => {
     setLoading(true);
     alert("Fetching data... This may take a few seconds.");
     try {
       const res = await axios.get(
-        `https://josaa-2025ranks.onrender.com/predict?rank=${rank}&category=${category}&round=${round}`
+         `https://josaa-2025ranks.onrender.com/predict?rank=${rank}&category=${category}&round=${round}`
+         // `http://localhost:5050/predict?rank=${rank}&category=${category}&round=${round}`
       );
-      // https://josaa-2025ranks.onrender.com/predict?rank=${rank}&category=${category}&round=${round}
-      // http://localhost:5050/predict?rank=${rank}&category=${category}&round=${round}
+      
       let data = res.data;
 
       // 🔍 Branch filter
@@ -85,27 +134,11 @@ function App() {
     setLoading(false);
   };
 
-  // 🎯 Top recommendations logic
-  const safe = results.filter(r => r.chance === "Safe").slice(0, 5);
-  const moderate = results.filter(r => r.chance === "Moderate").slice(0, 5);
-  const dream = results.filter(r => r.chance === "Dream").slice(0, 5);
-
-  const allInstitutes = [...new Set(results.map(r => r["Institute"]))];
-  //console.log("All Institutes:", allInstitutes.slice(0, 10)); // Debug: log first 10 institutes
-
-  const allPrograms = [
-    ...new Set(
-      results
-        .filter(r => r["Institute"] === instName)
-        .map(r => r["Program"])
-    )
-  ];
-
   const handleInstituteChange = (value) => {
     setInstName(value);
 
     if (!value) {
-      setInstSuggestions([]);
+      setInstSuggestions(allInstitutes); // show default list
       return;
     }
 
@@ -113,14 +146,15 @@ function App() {
       inst.toLowerCase().includes(value.toLowerCase())
     );
 
-    setInstSuggestions(filtered.slice(0, 5)); // limit suggestions
+    setInstSuggestions(filtered); // limit suggestions
+    //console.log("Institute Suggestions:", filtered.slice(0, 5)); // Debug: log suggestions
   };
 
   const handleProgramChange = (value) => {
     setProgName(value);
 
     if (!value) {
-      setProgSuggestions([]);
+      setProgSuggestions(allPrograms); // show default list
       return;
     }
 
@@ -128,8 +162,24 @@ function App() {
       prog.toLowerCase().includes(value.toLowerCase())
     );
 
-    setProgSuggestions(filtered.slice(0, 5));
+    setProgSuggestions(filtered);
+    //console.log("Program Suggestions:", filtered.slice(0, 5)); // Debug: log suggestions
   };
+
+  const handleBranchChange = (value) => {
+  setBranch(value);
+
+  if (!value) {
+    setBranchSuggestions(allProgramsGlobal.slice(0, 10));
+    return;
+  }
+
+  const filtered = allProgramsGlobal.filter(prog =>
+    prog.toLowerCase().includes(value.toLowerCase())
+  );
+
+  setBranchSuggestions(filtered.slice(0, 10));
+};
 
   return (
     <div className="container">
@@ -141,6 +191,9 @@ function App() {
       {/* Search by Rank Card */}
       <div className="card">
         <h2>Search by Rank</h2>
+        <p> Enter your rank, category, and round to see predicted options. Displays all options where your rank is below the cutoff range.</p>
+        <p> Then you can filter by program.</p>
+        <p> If you want to search for an Institute, refresh the page and then go to 'Search Cutoff by Institute'.</p>
         <div className="filters">
           <input
             type="number"
@@ -163,26 +216,43 @@ function App() {
             ))}
           </select>
 
-          <input
-            type="text"
-            placeholder="Filter Branch (e.g. Computer Science and Engineering)"
-            value={branch}
-            onChange={(e) => setBranch(e.target.value)}
-          />
+          <div className="autocomplete">
+            <input
+              type="text"
+              placeholder="Filter Program (e.g. Computer Science)"
+              value={branch}
+              onChange={(e) => handleBranchChange(e.target.value)}
+              onFocus={() => setBranchSuggestions(allProgramsGlobal.slice(0, 10))}
+              onBlur={() => setTimeout(() => setBranchSuggestions([]), 150)}
+            />
+
+  {branchSuggestions.length > 0 && (
+    <ul className="dropdown">
+      {branchSuggestions.map((prog, i) => (
+        <li
+          key={i}
+          onMouseDown={() => {
+            setBranch(prog);
+            setBranchSuggestions([]);
+          }}
+        >
+          {prog}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
 
           <button onClick={fetchData}>Search</button>
         </div>
+        <p>🔴 Dream Options (Reach)</p>
+        <p>🟡 Moderate Options (Consider)</p>
+        <p>🟢 Safe Options (Definite)</p>
 
         {loading && <p>Loading...</p>}
         {showResults && (
           <>
-            {/* Recommendations */}
-            <Section title="🔴 Dream Options (Reach)" data={dream} />
-            <Section title="🟡 Moderate Options (Consider)" data={moderate} />
-            <Section title="🟢 Safe Options (Definite)" data={safe} />
-
             {/* All results */}
-            <h2>All Results</h2>
             <Table data={results} />
           </>
         )}
@@ -191,29 +261,37 @@ function App() {
       {/* Search by Institute Card */}
       <div className="card">
         <h2>Search Cutoff by Institute</h2>
+        <p> Enter Institute Name and Program to see cutoff details.</p>
+        <p> If you don't see your institute, try a different spelling or scroll down.</p>
+        <p> Programs are filtered based on the selected institute, so select an institute first.</p>
         <div className="filters">
           <div className="autocomplete">
             <input
               type="text"
-              placeholder="Enter Institute"
+              placeholder="Enter Institute (e.g. National Institute of Technology Tiruchirappalli)"
               value={instName}
               onChange={(e) => handleInstituteChange(e.target.value)}
+              onFocus={() => setInstSuggestions(allInstitutes)}
+              onBlur={() => {
+              // delay so click can register
+              setTimeout(() => setInstSuggestions([]), 150);
+              }}
             />
-
             {instSuggestions.length > 0 && (
-              <ul className="dropdown">
-                {instSuggestions.map((inst, i) => (
-                  <li
-                    key={i}
-                    onClick={() => {
-                      setInstName(inst);
-                      setInstSuggestions([]);
-                    }}
-                  >
-                    {inst}
-                  </li>
-                ))}
-              </ul>
+            <ul className="dropdown">
+              {instSuggestions.map((inst, i) => (
+              <li
+                key={i}
+                onMouseDown={() => {   // 🔥 important fix
+                setInstName(inst);
+                setInstSuggestions([]);
+                setProgName("");     // reset program
+                fetchPrograms(inst); // fetch programs for selected institute
+              }}>
+                {inst}
+              </li>
+              ))}
+            </ul>
             )}
           </div>
 
@@ -223,6 +301,11 @@ function App() {
               placeholder="Enter Program"
               value={progName}
               onChange={(e) => handleProgramChange(e.target.value)}
+              onFocus={() => setProgSuggestions(allPrograms)}
+              onBlur={() => {
+                // delay so click can register
+                setTimeout(() => setProgSuggestions([]), 150);
+              }}
               disabled={!instName}
             />
 
@@ -231,7 +314,7 @@ function App() {
                 {progSuggestions.map((prog, i) => (
                   <li
                     key={i}
-                    onClick={() => {
+                    onMouseDown={() => {   // 🔥 important fix
                       setProgName(prog);
                       setProgSuggestions([]);
                     }}

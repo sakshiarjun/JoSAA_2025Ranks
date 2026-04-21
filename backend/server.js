@@ -23,6 +23,35 @@ app.get("/", (req, res) => {
   res.send("API is working");
 });
 
+app.get("/institutes", (req, res) => {
+  const institutes = [...new Set(data.map(d => d["Institute"]))];
+  res.json(institutes.sort());
+});
+
+app.get("/programs", (req, res) => {
+  const institute = req.query.institute;
+
+  if (!institute) {
+    return res.status(400).json({ error: "Institute required" });
+  }
+
+  const programs = [
+    ...new Set(
+      data
+        .filter(d => d["Institute"] === institute)
+        .map(d => d["Program"])
+    )
+  ];
+
+  res.json(programs.sort());
+});
+
+app.get("/all_programs", (req, res) => {
+  const programs = [...new Set(data.map(d => d["Program"]))];
+  res.json(programs.sort());
+});
+
+
 app.get("/predict", (req, res) => {
   const rank = parseInt(req.query.rank);
   const category = req.query.category;
@@ -96,7 +125,7 @@ app.get("/institute_cutoffs", (req, res) => {
     "Opening Rank": d["Opening Rank"],
     "Closing Rank": d["Closing Rank"]
   }));
-  console.log("Filtered cutoffs:", result.length, "records", result.slice(0, 3)); // debug log
+  //console.log("Filtered cutoffs:", result.length, "records", result.slice(0, 3)); // debug log
 
   // Sort by round (1 → 6)
   result.sort((a, b) => a["Round"] - b["Round"]);
