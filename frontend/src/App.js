@@ -210,7 +210,7 @@ function App() {
             <option value="EWS">EWS</option>
           </select>
 
-          <select onChange={(e) => setRound(e.target.value)}>
+          <select value={round} onChange={(e) => setRound(e.target.value)}>
             {[1,2,3,4,5,6].map(r => (
               <option key={r} value={r}>Round {r}</option>
             ))}
@@ -253,7 +253,34 @@ function App() {
         {showResults && (
           <>
             {/* All results */}
-            <Table data={results} />
+            <table className="results-table">
+              <thead>
+                <tr>
+                  <th>Institute</th>
+                  <th>Program</th>
+                  <th>Quota</th>
+                  <th>Closing Rank</th>
+                  <th>Chance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((row, index) => (
+                  <tr key={index}>
+                    <td>{row["Institute"]}</td>
+                    <td>{row["Program"]}</td>
+                    <td>{row["Quota"]}</td>
+                    <td>{row["Closing Rank"]}</td>
+                    <td>
+                      <span className={`badge ${row.chance.toLowerCase()}`}>
+                        {row.chance}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+
           </>
         )}
       </div>
@@ -398,36 +425,5 @@ function App() {
   );
 }
 
-
-function Table({ data }) {
-  return (
-    <table className="results-table">
-      <thead>
-        <tr>
-          <th>Institute</th>
-          <th>Program</th>
-          <th>Quota</th>
-          <th>Closing Rank</th>
-          <th>Chance</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((row, index) => (
-          <tr key={index}>
-            <td>{row["Institute"]}</td>
-            <td>{row["Program"]}</td>
-            <td>{row["Quota"]}</td>
-            <td>{row["Closing Rank"]}</td>
-            <td>
-              <span className={`badge ${row.chance.toLowerCase()}`}>
-                {row.chance}
-              </span>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
 
 export default App;
