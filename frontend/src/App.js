@@ -259,6 +259,7 @@ function App() {
                   <th>Institute</th>
                   <th>Program</th>
                   <th>Quota</th>
+                  <th>Gender</th>
                   <th>Closing Rank</th>
                   <th>Chance</th>
                 </tr>
@@ -269,6 +270,7 @@ function App() {
                     <td>{row["Institute"]}</td>
                     <td>{row["Program"]}</td>
                     <td>{row["Quota"]}</td>
+                    <td>{row["Gender"]}</td>
                     <td>{row["Closing Rank"]}</td>
                     <td>
                       <span className={`badge ${row.chance.toLowerCase()}`}>
