@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios, { all } from "axios";
+import axios from "axios";
 import "./App.css";
 
 function App() {
@@ -398,14 +398,6 @@ function App() {
   );
 }
 
-function Section({ title, data }) {
-  return (
-    <>
-      <h2>{title}</h2>
-      <Table data={data} />
-    </>
-  );
-}
 
 function Table({ data }) {
   return (
