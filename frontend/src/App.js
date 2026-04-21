@@ -30,7 +30,7 @@ function App() {
 
     try {
       const res = await axios.get(
-        `http://josaa-2025ranks.onrender.com/institute_cutoffs?institute=${instName}&program=${progName}`
+        `https://josaa-2025ranks.onrender.com/institute_cutoffs?institute=${instName}&program=${progName}`
       );
 
       let data = res.data;
@@ -62,7 +62,7 @@ function App() {
     alert("Fetching data... This may take a few seconds.");
     try {
       const res = await axios.get(
-        `http://josaa-2025ranks.onrender.com/predict?rank=${rank}&category=${category}&round=${round}`
+        `https://josaa-2025ranks.onrender.com/predict?rank=${rank}&category=${category}&round=${round}`
       );
       // https://josaa-2025ranks.onrender.com/predict?rank=${rank}&category=${category}&round=${round}
       // http://localhost:5050/predict?rank=${rank}&category=${category}&round=${round}
