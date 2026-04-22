@@ -84,7 +84,7 @@ app.get("/predict", (req, res) => {
   // Sort by closing rank (ascending = better colleges first)
   result.sort((a, b) => a["Closing Rank"] - b["Closing Rank"]);
 
-  res.json(result.slice(0, 100)); // limit for performance
+  res.json(result); 
 });
 
 app.get("/institute_cutoffs", (req, res) => {
