@@ -66,8 +66,8 @@ function App() {
     const fetchInstitutes = async () => {
       try {
         const res = await axios.get(
-          // "http://localhost:5050/institutes"
-          "https://josaa-2025ranks.onrender.com/institutes"
+          //"http://localhost:5050/institutes"
+           "https://josaa-2025ranks.onrender.com/institutes"
         );
         setAllInstitutes(res.data);
       } catch (err) {
@@ -82,8 +82,8 @@ function App() {
     const fetchAllPrograms = async () => {
       try {
         const res = await axios.get(
-          // "http://localhost:5050/all_programs"
-          "https://josaa-2025ranks.onrender.com/all_programs"
+           // "http://localhost:5050/all_programs"
+           "https://josaa-2025ranks.onrender.com/all_programs"
         );
         setAllProgramsGlobal(res.data);
       } catch (err) {
@@ -97,8 +97,8 @@ function App() {
   const fetchPrograms = async (institute) => {
     try {
       const res = await axios.get(
-        // `http://localhost:5050/programs?institute=${institute}`
-        `https://josaa-2025ranks.onrender.com/programs?institute=${institute}`
+         // `http://localhost:5050/programs?institute=${institute}`
+         `https://josaa-2025ranks.onrender.com/programs?institute=${institute}`
       );
       setAllPrograms(res.data);
     } catch (err) {
@@ -116,13 +116,20 @@ function App() {
       );
       
       let data = res.data;
-
+      console.log("Before Filter: ", res.data.length); 
+      
       // 🔍 Branch filter
       if (branch) {
-        data = data.filter(d =>
-          d["Program"].toLowerCase().includes(branch.toLowerCase())
-        );
-      }
+  const normalize = (str) =>
+    str.toLowerCase().replace(/[^a-z]/g, "");
+
+  const search = normalize(branch);
+
+  data = data.filter(d =>
+    normalize(d["Program"]).includes(search)
+  );
+}
+      console.log("After Filter: ", data.length);
 
       setResults(data);
       console.log("Updated Results:", data.slice(0, 10)); // Debug: log first 10 results
@@ -243,7 +250,9 @@ function App() {
   )}
 </div>
 
-          <button onClick={fetchData}>Search</button>
+          <button onClick={fetchData}>
+            Search
+          </button>
         </div>
         <p>🔴 Dream Options (Reach)</p>
         <p>🟡 Moderate Options (Consider)</p>
@@ -378,7 +387,7 @@ function App() {
               type="checkbox"
               onChange={(e) => setHideHomeState(e.target.checked)}
             />
-            Hide Home State Data
+            Hide Home State Data (only for NITs)
           </label>
 
           <button onClick={fetchInstituteData}>

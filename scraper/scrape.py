@@ -34,10 +34,10 @@ for r in rounds:
 
         driver.execute_script("""
         var ddl = document.getElementById('ctl00_ContentPlaceHolder1_ddlInstype');
-        ddl.value = 'NIT';
+        ddl.value = '3IT';
         __doPostBack('ctl00$ContentPlaceHolder1$ddlInstype','');
         """)
-        print("✅ Institute Type set to NIT")
+        print("✅ Institute Type set to 3IT")
         time.sleep(3)
 
         driver.execute_script("""
@@ -77,10 +77,10 @@ for r in rounds:
         print(f"✅ Done Round {r}")
 
         # Debugging: Log all <select> elements on the page
-        all_selects = driver.find_elements(By.TAG_NAME, "select")
-        print("Logging all <select> elements on the page:")
-        for select in all_selects:
-            print(f"ID: {select.get_attribute('id')}, Name: {select.get_attribute('name')}, Visible: {select.is_displayed()}")
+        # all_selects = driver.find_elements(By.TAG_NAME, "select")
+        # print("Logging all <select> elements on the page:")
+        # for select in all_selects:
+        #     print(f"ID: {select.get_attribute('id')}, Name: {select.get_attribute('name')}, Visible: {select.is_displayed()}")
 
     except TimeoutException:
         print(f"❌ TimeoutException: Dropdown not clickable or present for round {r}")
@@ -108,6 +108,6 @@ df = pd.DataFrame(all_data, columns=[
     "Opening Rank",
     "Closing Rank"
 ])
-df.to_csv("../data/josaa_full.csv", index=False)
+df.to_csv("../data/josaa_iiit.csv", index=False)
 
 print("🔥 FULL DATASET READY")

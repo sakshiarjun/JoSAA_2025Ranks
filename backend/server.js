@@ -6,7 +6,7 @@ app.use(cors());
 app.use(express.json());
 
 console.log("Loading data...");
-const data = require("./josaa.json");
+const data = require("./josaa_all.json");
 console.log("Data loaded:", data.length, "records");
 
 // Helper: classify chances

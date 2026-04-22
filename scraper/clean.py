@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("../data/josaa_full.csv")
+df = pd.read_csv("../data/josaa_iiit.csv")
 
 print("Initial rows:", len(df))
 
@@ -72,7 +72,7 @@ print("Cleaned rows:", len(df))
 # -------------------------------
 # 8. Save
 # -------------------------------
-df.to_csv("../data/josaa_clean.csv", index=False)
-df.to_json("../backend/josaa.json", orient="records")
+df.to_csv("../data/josaa_clean_iiit.csv", index=False)
+df.to_json("../backend/josaa_iiit.json", orient="records")
 
 print("✅ Clean dataset ready")

@@ -57,7 +57,7 @@ h3 {
 
 /* Style for dropdowns to make them the same width and aligned side by side */
 .filters select {
-  width: 48%;
+  width: 20%;
   display: inline-block;
   margin-right: 2%;
 }
@@ -71,7 +71,7 @@ h3 {
 }
 
 .filters button {
-  display: block;
+  display: inline-block;
   margin-top: 10px;
 
 }
